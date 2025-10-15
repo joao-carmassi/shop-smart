@@ -1,3 +1,6 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import ItemGroup from '@/components/item-group';
 import ItemRow from '@/components/item-row';
 import ListNav from '@/components/list-nav';
@@ -10,23 +13,29 @@ import {
   CardFooter,
   CardHeader,
 } from '@/components/ui/card';
+import useItemsStore from '@/store/items';
+import {
+  Banner,
+  BannerAction,
+  BannerIcon,
+  BannerTitle,
+} from '@/components/kibo-ui/banner';
+import { Pen } from 'lucide-react';
 
-const data = [
-  { id: '1', title: 'Item 1', checked: false, group: 'A' },
-  { id: '2', title: 'Item 2', checked: true, group: 'B' },
-  { id: '3', title: 'Item 3', checked: false, group: 'A' },
-  { id: '4', title: 'Item 4', checked: true, group: 'B' },
-  { id: '5', title: 'Item 5', checked: false, group: 'A' },
-  { id: '6', title: 'Item 6', checked: true, group: 'C' },
-  { id: '7', title: 'Item 7', checked: false, group: 'C' },
-  { id: '8', title: 'Item 8', checked: true, group: 'A' },
-  { id: '9', title: 'Item 9', checked: false, group: 'B' },
-  { id: '10', title: 'Item 10', checked: true, group: 'C' },
-];
+export default function Home(): React.ReactNode {
+  const {
+    items,
+    groups,
+    selectAll,
+    clearSelection,
+    isEditing: editing,
+  } = useItemsStore();
+  const [accordionValue, setAccordionValue] = useState<string[]>([]);
 
-const groups = [...new Set(data.map((item) => item.group))];
+  useEffect(() => {
+    setAccordionValue([...groups]);
+  }, [groups]);
 
-export default function Home() {
   return (
     <main className='mx-auto max-w-7xl md:p-12 min-h-[26rem] h-screen flex items-center justify-center'>
       <Card className='rounded-none shadow-none border-0 md:rounded-2xl md:shadow-md w-full max-w-lg h-full'>
@@ -36,10 +45,14 @@ export default function Home() {
           </CardDescription>
         </CardHeader>
         <CardContent className='bg-red-50 rounded-md p-4 h-full'>
-          <Accordion type='multiple'>
+          <Accordion
+            value={accordionValue}
+            onValueChange={setAccordionValue}
+            type='multiple'
+          >
             {groups.map((group, i) => (
               <ItemGroup group={group} i={i} key={group}>
-                {data
+                {items
                   .filter((item) => item.group === group)
                   .map((item) => (
                     <ItemRow key={item.id} item={item} />
@@ -49,14 +62,21 @@ export default function Home() {
           </Accordion>
         </CardContent>
         <CardFooter className='flex justify-end'>
-          <Button variant='link' size='sm'>
+          <Button onClick={selectAll} variant='link' size='sm'>
             Selecionar Todos
           </Button>
-          <Button variant='link' size='sm'>
+          <Button onClick={clearSelection} variant='link' size='sm'>
             Limpar Seleção
           </Button>
         </CardFooter>
       </Card>
+      {editing && (
+        <Banner className='fixed bottom-0 w-full'>
+          <BannerIcon icon={Pen} />
+          <BannerTitle>Editando</BannerTitle>
+          <BannerAction>Sair do modo edição</BannerAction>
+        </Banner>
+      )}
     </main>
   );
 }

@@ -22,21 +22,41 @@ import { Input } from './ui/input';
 import { Label } from '@radix-ui/react-label';
 import { Combobox } from './example-combobox';
 import { useState } from 'react';
+import useItemsStore from '@/store/items';
 
 function ListNav(): React.ReactNode {
-  const [groups, setGroups] = useState<string[]>(['mercado', 'conveniencia']);
+  const {
+    clearItems,
+    addItem,
+    groups: storeGroups,
+    setEditing,
+  } = useItemsStore();
+  const [localGroups, setLocalGroups] = useState<string[]>([]);
   const [item, setItem] = useState('');
   const [group, setGroup] = useState('');
   const [open, setOpen] = useState(false);
 
-  function handleValueChange(newGroup: string, newGroups: string[]) {
+  function handleValueChange(newGroup: string, newGroups?: string[]) {
     setGroup(newGroup);
-    setGroups(newGroups);
+    if (
+      newGroups &&
+      !storeGroups.includes(newGroup) &&
+      !localGroups.includes(newGroup)
+    ) {
+      setLocalGroups([...localGroups, newGroup]);
+    }
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    console.log({ item: item, grupo: group });
+    addItem({
+      item: item,
+      group: group ? group : 'Geral',
+    });
+    setItem('');
+    setGroup('');
+    setOpen(false);
+    setLocalGroups([]);
   }
 
   return (
@@ -48,16 +68,19 @@ function ListNav(): React.ReactNode {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='start'>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setEditing(true)}>
             <Pen /> Editar
           </DropdownMenuItem>
           <DropdownMenuItem>
             <ArrowUp /> Exportar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className='text-red-500 hover:text-foreground group'>
+          <DropdownMenuItem
+            onClick={() => clearItems()}
+            className='text-red-500 hover:text-foreground group'
+          >
             <Trash className='text-red-500 group-hover:text-muted-foreground' />
-            Apagar item
+            Apagar itens
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -89,7 +112,7 @@ function ListNav(): React.ReactNode {
                       Grupo
                     </Label>
                     <Combobox
-                      items={groups}
+                      items={[...storeGroups, ...localGroups]}
                       value={group}
                       onValueChange={handleValueChange}
                       id='group'
