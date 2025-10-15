@@ -1,11 +1,8 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import ItemGroup from '@/components/item-group';
+import ItemRow from '@/components/item-row';
+import ListNav from '@/components/list-nav';
+import { Accordion } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { ButtonGroup } from '@/components/ui/button-group';
 import {
   Card,
   CardContent,
@@ -13,10 +10,21 @@ import {
   CardFooter,
   CardHeader,
 } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 
-import { ArrowRight, Menu, Trash } from 'lucide-react';
+const data = [
+  { id: '1', title: 'Item 1', checked: false, group: 'A' },
+  { id: '2', title: 'Item 2', checked: true, group: 'B' },
+  { id: '3', title: 'Item 3', checked: false, group: 'A' },
+  { id: '4', title: 'Item 4', checked: true, group: 'B' },
+  { id: '5', title: 'Item 5', checked: false, group: 'A' },
+  { id: '6', title: 'Item 6', checked: true, group: 'C' },
+  { id: '7', title: 'Item 7', checked: false, group: 'C' },
+  { id: '8', title: 'Item 8', checked: true, group: 'A' },
+  { id: '9', title: 'Item 9', checked: false, group: 'B' },
+  { id: '10', title: 'Item 10', checked: true, group: 'C' },
+];
+
+const groups = [...new Set(data.map((item) => item.group))];
 
 export default function Home() {
   return (
@@ -24,58 +32,20 @@ export default function Home() {
       <Card className='rounded-none shadow-none border-0 md:rounded-2xl md:shadow-md w-full max-w-lg h-full'>
         <CardHeader>
           <CardDescription className='grid grid-cols-[auto_1fr] gap-y-2 gap-x-3'>
-            <Button>
-              <Menu />
-            </Button>
-            <Button className='w-full'>
-              Adicionar <ArrowRight />
-            </Button>
+            <ListNav />
           </CardDescription>
         </CardHeader>
         <CardContent className='bg-red-50 rounded-md p-4 h-full'>
           <Accordion type='multiple'>
-            <AccordionItem value='item-1'>
-              <AccordionTrigger className='capitalize pt-0'>
-                Is it accessible?
-              </AccordionTrigger>
-              <AccordionContent>
-                <ul className='space-y-5'>
-                  <li className='flex items-center gap-3 justify-between'>
-                    <div className='flex items-center gap-1.5'>
-                      <Checkbox id='terms-1' />
-                      <Label className='capitalize' htmlFor='terms-1'>
-                        teste - 1
-                      </Label>
-                    </div>
-                    <Button className='hidden' size={'sm'}>
-                      <Trash />
-                    </Button>
-                  </li>
-                  <li className='flex items-center gap-3 justify-between'>
-                    <div className='flex items-center gap-1.5'>
-                      <Checkbox id='terms-2' />
-                      <Label className='capitalize' htmlFor='terms-2'>
-                        teste - 2
-                      </Label>
-                    </div>
-                    <Button className='hidden' size={'sm'}>
-                      <Trash />
-                    </Button>
-                  </li>
-                  <li className='flex items-center gap-3 justify-between'>
-                    <div className='flex items-center gap-1.5'>
-                      <Checkbox id='terms-3' />
-                      <Label className='capitalize' htmlFor='terms-3'>
-                        teste - 3
-                      </Label>
-                    </div>
-                    <Button className='hidden' size={'sm'}>
-                      <Trash />
-                    </Button>
-                  </li>
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
+            {groups.map((group, i) => (
+              <ItemGroup group={group} i={i} key={group}>
+                {data
+                  .filter((item) => item.group === group)
+                  .map((item) => (
+                    <ItemRow key={item.id} item={item} />
+                  ))}
+              </ItemGroup>
+            ))}
           </Accordion>
         </CardContent>
         <CardFooter className='flex justify-end'>
