@@ -102,7 +102,7 @@ function ListNav(): React.ReactNode {
               <DialogTitle>Adicionar item</DialogTitle>
               <DialogDescription asChild>
                 <div className='grid grid-cols-[1fr_auto] gap-3'>
-                  <div className='grid gap-1.5'>
+                  <div className='grid gap-1.5 w-full place-items-start'>
                     <Label htmlFor='item' className=''>
                       Item
                     </Label>
@@ -111,9 +111,10 @@ function ListNav(): React.ReactNode {
                       placeholder='Digite o título do item'
                       value={item}
                       onChange={(e) => setItem(e.target.value)}
+                      className='w-full'
                     />
                   </div>
-                  <div className='grid gap-1.5'>
+                  <div className='grid gap-1.5 place-items-start'>
                     <Label htmlFor='group' className=''>
                       Grupo
                     </Label>
@@ -122,6 +123,7 @@ function ListNav(): React.ReactNode {
                       value={group}
                       onValueChange={handleValueChange}
                       id='group'
+                      className='w-fit'
                     />
                   </div>
                 </div>

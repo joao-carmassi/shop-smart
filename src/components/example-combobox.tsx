@@ -53,9 +53,7 @@ export function Combobox({
           aria-expanded={open}
           {...rest}
         >
-          {value
-            ? items.find((item) => item === value)
-            : 'Selecione um grupo...'}
+          {value ? items.find((item) => item === value) : 'Grupo'}
           <ChevronsUpDownIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
@@ -107,7 +105,7 @@ export function Combobox({
                   {item}
                 </CommandItem>
               ))}
-            <CommandEmpty>No item found.</CommandEmpty>
+            <CommandEmpty>Sem itens.</CommandEmpty>
           </CommandList>
         </Command>
       </PopoverContent>

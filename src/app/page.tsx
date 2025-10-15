@@ -21,7 +21,7 @@ import {
   BannerTitle,
 } from '@/components/kibo-ui/banner';
 import { Pen } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import LZString from 'lz-string';
 
 export default function Home(): React.ReactNode {
@@ -34,7 +34,7 @@ export default function Home(): React.ReactNode {
     importItems,
   } = useItemsStore();
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
-
+  const router = useRouter();
   const params = useSearchParams();
   const importParam = params.get('import');
 
@@ -44,23 +44,24 @@ export default function Home(): React.ReactNode {
       if (decoded) {
         const items = JSON.parse(decoded);
         importItems(items);
+        router.replace(window.location.origin);
       }
     }
-  }, [importParam, importItems]);
+  }, [importParam, importItems, router]);
 
   useEffect(() => {
     setAccordionValue([...groups]);
   }, [groups]);
 
   return (
-    <main className='mx-auto max-w-7xl md:p-12 min-h-[26rem] h-screen flex items-center justify-center'>
+    <main className='mx-auto max-w-7xl md:p-12 min-h-[26rem] h-svh flex items-center justify-center'>
       <Card className='rounded-none shadow-none border-0 md:rounded-2xl md:shadow-md w-full max-w-lg h-full'>
         <CardHeader>
           <CardDescription className='grid grid-cols-[auto_1fr] gap-y-2 gap-x-3'>
             <ListNav />
           </CardDescription>
         </CardHeader>
-        <CardContent className='bg-red-50 rounded-md p-4 h-full'>
+        <CardContent className='bg-red-50 rounded-md p-4 h-full overflow-auto custom-scrollbar'>
           <Accordion
             value={accordionValue}
             onValueChange={setAccordionValue}

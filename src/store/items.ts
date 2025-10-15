@@ -85,7 +85,7 @@ const useItemsStore = create<ItemsState>()(
       exportState: () => {
         const state = get();
         return `${
-          process.env.NEXT_PUBLIC_BASE_PATH
+          window.location.origin
         }/?import=${LZString.compressToEncodedURIComponent(
           JSON.stringify(state.items)
         )}`;
