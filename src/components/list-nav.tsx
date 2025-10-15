@@ -1,3 +1,5 @@
+'use client';
+
 import { ArrowRight, ArrowUp, Menu, Pen, Trash } from 'lucide-react';
 import { Button } from './ui/button';
 import {
@@ -18,8 +20,25 @@ import {
 } from './ui/dialog';
 import { Input } from './ui/input';
 import { Label } from '@radix-ui/react-label';
+import { Combobox } from './example-combobox';
+import { useState } from 'react';
 
 function ListNav(): React.ReactNode {
+  const [groups, setGroups] = useState<string[]>(['mercado', 'conveniencia']);
+  const [item, setItem] = useState('');
+  const [group, setGroup] = useState('');
+  const [open, setOpen] = useState(false);
+
+  function handleValueChange(newGroup: string, newGroups: string[]) {
+    setGroup(newGroup);
+    setGroups(newGroups);
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    console.log({ item: item, grupo: group });
+  }
+
   return (
     <>
       <DropdownMenu>
@@ -42,38 +61,58 @@ function ListNav(): React.ReactNode {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className='w-full'>
             Adicionar <ArrowRight />
           </Button>
         </DialogTrigger>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Adicionar item</DialogTitle>
-            <DialogDescription asChild>
-              <div className='grid grid-cols-[1fr_auto] gap-3'>
-                <div>
-                  <Label htmlFor='item' className='mb-2'>
-                    Título
-                  </Label>
-                  <Input id='item' placeholder='Digite o título do item' />
+          <form onSubmit={handleSubmit}>
+            <DialogHeader>
+              <DialogTitle>Adicionar item</DialogTitle>
+              <DialogDescription asChild>
+                <div className='grid grid-cols-[1fr_auto] gap-3'>
+                  <div className='grid gap-1.5'>
+                    <Label htmlFor='item' className=''>
+                      Item
+                    </Label>
+                    <Input
+                      id='item'
+                      placeholder='Digite o título do item'
+                      value={item}
+                      onChange={(e) => setItem(e.target.value)}
+                    />
+                  </div>
+                  <div className='grid gap-1.5'>
+                    <Label htmlFor='group' className=''>
+                      Grupo
+                    </Label>
+                    <Combobox
+                      items={groups}
+                      value={group}
+                      onValueChange={handleValueChange}
+                      id='group'
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor='group' className='mb-2 mt-4'>
-                    Grupo
-                  </Label>
-                  <Input id='group' placeholder='Digite o grupo do item' />
-                </div>
-              </div>
-            </DialogDescription>
-            <DialogFooter>
-              <Button type='submit'>Adicionar item</Button>
-              <Button type='button' variant='outline'>
-                Cancelar
-              </Button>
-            </DialogFooter>
-          </DialogHeader>
+              </DialogDescription>
+              <DialogFooter>
+                <Button type='submit'>Adicionar item</Button>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={() => {
+                    setOpen(false);
+                    setItem('');
+                    setGroup('');
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </DialogFooter>
+            </DialogHeader>
+          </form>
         </DialogContent>
       </Dialog>
     </>
