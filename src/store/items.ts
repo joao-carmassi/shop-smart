@@ -2,11 +2,13 @@ import { IItem } from '@/types/item';
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { persist } from 'zustand/middleware';
+import LZString from 'lz-string';
 
 interface ItemsState {
   items: IItem[];
   groups: string[];
   isEditing: boolean;
+  importItems: (items: IItem[]) => void;
   addItem: (item: Omit<IItem, 'id' | 'checked'>) => void;
   removeItem: (id: string) => void;
   clearItems: () => void;
@@ -14,14 +16,28 @@ interface ItemsState {
   selectAll: () => void;
   clearSelection: () => void;
   setEditing: (editing: boolean) => void;
+  exportState: () => string;
 }
 
 const useItemsStore = create<ItemsState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       items: [] as IItem[],
       groups: [] as string[],
       isEditing: false,
+      importItems: (items: IItem[]) =>
+        set(() => {
+          const updatedItems = items.map((item) => {
+            const existingItem = get().items.find((i) => i.id === item.id);
+            return existingItem
+              ? { ...item, checked: existingItem.checked }
+              : { ...item, checked: false };
+          });
+          const updatedGroups = Array.from(
+            new Set(items.map((item) => item.group))
+          );
+          return { items: updatedItems, groups: updatedGroups };
+        }),
       addItem: (item: Omit<IItem, 'id' | 'checked'>) =>
         set((state) => {
           const updatedItems = [
@@ -66,6 +82,14 @@ const useItemsStore = create<ItemsState>()(
           })),
         })),
       setEditing: (editing: boolean) => set({ isEditing: editing }),
+      exportState: () => {
+        const state = get();
+        return `${
+          process.env.NEXT_PUBLIC_BASE_PATH
+        }/?import=${LZString.compressToEncodedURIComponent(
+          JSON.stringify(state.items)
+        )}`;
+      },
     }),
     {
       name: 'items-storage',

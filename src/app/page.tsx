@@ -21,6 +21,8 @@ import {
   BannerTitle,
 } from '@/components/kibo-ui/banner';
 import { Pen } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import LZString from 'lz-string';
 
 export default function Home(): React.ReactNode {
   const {
@@ -29,8 +31,22 @@ export default function Home(): React.ReactNode {
     selectAll,
     clearSelection,
     isEditing: editing,
+    importItems,
   } = useItemsStore();
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
+
+  const params = useSearchParams();
+  const importParam = params.get('import');
+
+  useEffect(() => {
+    if (importParam) {
+      const decoded = LZString.decompressFromEncodedURIComponent(importParam);
+      if (decoded) {
+        const items = JSON.parse(decoded);
+        importItems(items);
+      }
+    }
+  }, [importParam, importItems]);
 
   useEffect(() => {
     setAccordionValue([...groups]);
