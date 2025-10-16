@@ -84,8 +84,8 @@ const useItemsStore = create<ItemsState>()(
       setEditing: (editing: boolean) => set({ isEditing: editing }),
       exportState: () => {
         const state = get();
-        return `${
-          window.location.origin
+        return `${window.location.origin}${
+          process.env.NEXT_PUBLIC_BASE_PATH
         }/?import=${LZString.compressToEncodedURIComponent(
           JSON.stringify(state.items)
         )}`;

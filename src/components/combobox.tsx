@@ -38,8 +38,9 @@ export function Combobox({
 }: ComboboxProps): React.ReactNode {
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState('');
+  const trimmedValue = inputValue.trim();
   const exists = items.some(
-    (item) => item.toLowerCase() === inputValue.toLowerCase()
+    (item) => item.toLowerCase() === trimmedValue.toLowerCase()
   );
 
   return (
@@ -58,30 +59,30 @@ export function Combobox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className='block w-[200px] p-0'>
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput
-            placeholder='Search...'
+            placeholder='Adicionar...'
             value={inputValue}
             onValueChange={setInputValue}
           />
           <CommandList>
-            {!exists && inputValue.trim() !== '' && (
+            {!exists && trimmedValue !== '' && (
               <CommandItem
-                value={inputValue}
+                value={trimmedValue}
                 onSelect={() => {
-                  const newItems = [...items, inputValue];
-                  onValueChange(inputValue, newItems);
+                  const newItems = [...items, trimmedValue];
+                  onValueChange(trimmedValue, newItems);
                   setOpen(false);
                   setInputValue('');
                 }}
               >
                 <CheckIcon className='mr-2 h-4 w-4 opacity-100' />
-                Criar {inputValue}
+                Criar {trimmedValue}
               </CommandItem>
             )}
             {items
               .filter((item) =>
-                item.toLowerCase().includes(inputValue.toLowerCase())
+                item.toLowerCase().includes(trimmedValue.toLowerCase())
               )
               .map((item) => (
                 <CommandItem

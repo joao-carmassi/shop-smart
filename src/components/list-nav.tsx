@@ -1,4 +1,5 @@
 'use client';
+
 import { ArrowRight, ArrowUp, Menu, Pen, Trash } from 'lucide-react';
 import { Button } from './ui/button';
 import {
@@ -19,9 +20,19 @@ import {
 } from './ui/dialog';
 import { Input } from './ui/input';
 import { Label } from '@radix-ui/react-label';
-import { Combobox } from './example-combobox';
+import { Combobox } from './combobox';
 import { useState } from 'react';
 import useItemsStore from '@/store/items';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const schema = z.object({
+  item: z.string().min(1, 'Item é obrigatório'),
+  group: z.string(),
+});
+
+type TSchema = z.infer<typeof schema>;
 
 function ListNav(): React.ReactNode {
   const {
@@ -32,9 +43,16 @@ function ListNav(): React.ReactNode {
     exportState,
   } = useItemsStore();
   const [localGroups, setLocalGroups] = useState<string[]>([]);
-  const [item, setItem] = useState('');
   const [group, setGroup] = useState('');
   const [open, setOpen] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<TSchema>({
+    resolver: zodResolver(schema),
+  });
 
   function handleValueChange(newGroup: string, newGroups?: string[]) {
     setGroup(newGroup);
@@ -47,13 +65,12 @@ function ListNav(): React.ReactNode {
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleClick(data: TSchema) {
     addItem({
-      item: item,
+      item: data.item,
       group: group ? group : 'Geral',
     });
-    setItem('');
+    reset();
     setGroup('');
     setOpen(false);
     setLocalGroups([]);
@@ -97,7 +114,7 @@ function ListNav(): React.ReactNode {
           </Button>
         </DialogTrigger>
         <DialogContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(handleClick)}>
             <DialogHeader>
               <DialogTitle>Adicionar item</DialogTitle>
               <DialogDescription asChild>
@@ -108,11 +125,17 @@ function ListNav(): React.ReactNode {
                     </Label>
                     <Input
                       id='item'
-                      placeholder='Digite o título do item'
-                      value={item}
-                      onChange={(e) => setItem(e.target.value)}
+                      placeholder='Digite o item'
                       className='w-full'
+                      {...register('item')}
+                      autoComplete='off'
+                      aria-invalid={errors.item ? 'true' : 'false'}
                     />
+                    {errors.item && (
+                      <span className='text-sm text-red-500'>
+                        {errors.item.message}
+                      </span>
+                    )}
                   </div>
                   <div className='grid gap-1.5 place-items-start'>
                     <Label htmlFor='group' className=''>
@@ -124,6 +147,7 @@ function ListNav(): React.ReactNode {
                       onValueChange={handleValueChange}
                       id='group'
                       className='w-fit'
+                      {...register('group')}
                     />
                   </div>
                 </div>
@@ -135,7 +159,7 @@ function ListNav(): React.ReactNode {
                   variant='outline'
                   onClick={() => {
                     setOpen(false);
-                    setItem('');
+                    reset();
                     setGroup('');
                   }}
                 >
