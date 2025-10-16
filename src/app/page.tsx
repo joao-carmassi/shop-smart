@@ -44,9 +44,6 @@ export default function Home(): React.ReactNode {
       if (decoded) {
         const items = JSON.parse(decoded);
         importItems(items);
-        router.replace(
-          `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH}`
-        );
       }
     }
   }, [importParam, importItems, router]);
