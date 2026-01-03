@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 export const metadata: Metadata = {
   title: 'Shop smart',
   description: 'Shop smart, compre oque você precisa',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
