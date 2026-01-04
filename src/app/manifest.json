@@ -2,7 +2,7 @@
   "name": "Shop smart",
   "short_name": "Shop smart",
   "description": "Shop smart, compre oque você precisa",
-  "start_url": "/",
+  "start_url": "/shop-smart/",
   "display": "standalone",
   "theme_color": "#fef2f2",
   "background_color": "#000000",
