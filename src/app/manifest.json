@@ -4,7 +4,7 @@
   "description": "Shop smart, compre oque você precisa",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#8936FF",
+  "theme_color": "#fef2f2",
   "background_color": "#000000",
   "icons": [
     {

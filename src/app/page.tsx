@@ -1,16 +1,13 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import ItemGroup from '@/components/item-group';
 import ItemRow from '@/components/item-row';
 import ListNav from '@/components/list-nav';
 import { Accordion } from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
 } from '@/components/ui/card';
 import useItemsStore from '@/store/items';
@@ -25,14 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import LZString from 'lz-string';
 
 export default function Home(): React.ReactNode {
-  const {
-    items,
-    groups,
-    selectAll,
-    clearSelection,
-    isEditing: editing,
-    importItems,
-  } = useItemsStore();
+  const { items, groups, isEditing: editing, importItems } = useItemsStore();
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
   const router = useRouter();
   const params = useSearchParams();
@@ -80,14 +70,6 @@ export default function Home(): React.ReactNode {
             ))}
           </Accordion>
         </CardContent>
-        <CardFooter className='flex justify-end'>
-          <Button onClick={selectAll} variant='link' size='sm'>
-            Selecionar Todos
-          </Button>
-          <Button onClick={clearSelection} variant='link' size='sm'>
-            Limpar Seleção
-          </Button>
-        </CardFooter>
       </Card>
       {editing && (
         <Banner className='fixed bottom-0 w-full'>

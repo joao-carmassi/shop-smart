@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, ArrowUp, Menu, Pen, Trash } from 'lucide-react';
+import { ArrowRight, Check, FileUp, Menu, Pen, Trash, X } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -41,6 +41,8 @@ function ListNav(): React.ReactNode {
     groups: storeGroups,
     setEditing,
     exportState,
+    selectAll,
+    clearSelection,
   } = useItemsStore();
   const [localGroups, setLocalGroups] = useState<string[]>([]);
   const [group, setGroup] = useState('');
@@ -88,6 +90,12 @@ function ListNav(): React.ReactNode {
           <DropdownMenuItem onClick={() => setEditing(true)}>
             <Pen /> Editar
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={selectAll}>
+            <Check /> Selecionar Tudo
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={clearSelection}>
+            <X /> Limpar Seleção
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               const compressed = exportState();
@@ -95,7 +103,7 @@ function ListNav(): React.ReactNode {
               alert('Lista copiada para a área de transferência!');
             }}
           >
-            <ArrowUp /> Exportar
+            <FileUp /> Exportar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
