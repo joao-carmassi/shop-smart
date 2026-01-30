@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
 import ItemGroup from '@/components/item-group';
 import ItemRow from '@/components/item-row';
@@ -35,7 +36,7 @@ export default function Home(): React.ReactNode {
         const items = JSON.parse(decoded);
         importItems(items);
         router.replace(
-          `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH}`
+          `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH}`,
         );
       }
     }

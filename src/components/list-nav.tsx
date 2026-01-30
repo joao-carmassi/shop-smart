@@ -47,6 +47,7 @@ function ListNav(): React.ReactNode {
   const [localGroups, setLocalGroups] = useState<string[]>([]);
   const [group, setGroup] = useState('');
   const [open, setOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const {
     register,
     handleSubmit,
@@ -107,14 +108,43 @@ function ListNav(): React.ReactNode {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onClick={() => clearItems()}
-            className='text-red-500 hover:text-foreground group'
+            className='text-red-500 focus:text-red-500'
+            onClick={() => setDeleteDialogOpen(true)}
           >
-            <Trash className='text-red-500 group-hover:text-muted-foreground' />
+            <Trash className='text-red-500' />
             Apagar itens
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Tem certeza?</DialogTitle>
+            <DialogDescription>
+              Esta ação não pode ser desfeita. Isso irá apagar permanentemente
+              todos os itens da sua lista.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant='destructive'
+              onClick={() => {
+                clearItems();
+                setDeleteDialogOpen(false);
+              }}
+            >
+              Apagar
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className='w-full'>
