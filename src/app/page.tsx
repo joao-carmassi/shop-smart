@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
 } from '@/components/ui/card';
 import useItemsStore from '@/store/items';
@@ -47,7 +48,7 @@ export default function Home(): React.ReactNode {
   }, [groups]);
 
   return (
-    <main className='mx-auto max-w-7xl md:p-12 min-h-[26rem] h-svh flex items-center justify-center'>
+    <main className='mx-auto max-w-7xl md:p-12 min-h-screen h-svh flex flex-col items-center justify-between'>
       <Card className='rounded-none shadow-none border-0 md:rounded-2xl md:shadow-md w-full max-w-lg h-full'>
         <CardHeader>
           <CardDescription className='grid grid-cols-[auto_1fr] gap-y-2 gap-x-3'>
@@ -71,14 +72,16 @@ export default function Home(): React.ReactNode {
             ))}
           </Accordion>
         </CardContent>
+        <CardFooter>
+          {editing && (
+            <Banner className='w-full rounded-xl'>
+              <BannerIcon icon={Pen} />
+              <BannerTitle>Editando</BannerTitle>
+              <BannerAction>Sair do modo edição</BannerAction>
+            </Banner>
+          )}
+        </CardFooter>
       </Card>
-      {editing && (
-        <Banner className='fixed bottom-0 w-full'>
-          <BannerIcon icon={Pen} />
-          <BannerTitle>Editando</BannerTitle>
-          <BannerAction>Sair do modo edição</BannerAction>
-        </Banner>
-      )}
     </main>
   );
 }
