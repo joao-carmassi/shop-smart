@@ -53,9 +53,9 @@ export const Banner = ({
     <BannerContext.Provider value={{ show, setShow }}>
       <div
         className={cn(
-          'flex w-full items-center justify-between gap-2 bg-primary px-4 py-3 text-primary-foreground',
+          'flex w-full items-center justify-between gap-2 bg-primary px-2 py-2 text-primary-foreground',
           inset && 'rounded-lg',
-          className
+          className,
         )}
         {...props}
       >
@@ -77,7 +77,7 @@ export const BannerIcon = ({
   <div
     className={cn(
       'rounded-full border border-background/20 bg-background/10 p-1 shadow-sm',
-      className
+      className,
     )}
     {...props}
   >
@@ -105,7 +105,7 @@ export const BannerAction = ({
     <Button
       className={cn(
         'shrink-0 bg-transparent hover:bg-background/10 hover:text-background shadow-none',
-        className
+        className,
       )}
       size={size}
       variant={variant}
@@ -135,7 +135,7 @@ export const BannerClose = ({
     <Button
       className={cn(
         'shrink-0 bg-transparent hover:bg-background/10 hover:text-background',
-        className
+        className,
       )}
       onClick={handleClick}
       size={size}
