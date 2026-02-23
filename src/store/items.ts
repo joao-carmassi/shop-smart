@@ -10,6 +10,7 @@ interface ItemsState {
   isEditing: boolean;
   importItems: (items: IItem[]) => void;
   addItem: (item: Omit<IItem, 'id' | 'checked'>) => void;
+  updateItem: (id: string, updates: Pick<IItem, 'item' | 'group'>) => void;
   removeItem: (id: string) => void;
   clearItems: () => void;
   toggleItemSelection: (id: string) => void;
@@ -34,7 +35,7 @@ const useItemsStore = create<ItemsState>()(
               : { ...item, checked: false };
           });
           const updatedGroups = Array.from(
-            new Set(items.map((item) => item.group))
+            new Set(items.map((item) => item.group)),
           );
           return { items: updatedItems, groups: updatedGroups };
         }),
@@ -45,7 +46,17 @@ const useItemsStore = create<ItemsState>()(
             { ...item, checked: false, id: uuidv4() },
           ];
           const updatedGroups = Array.from(
-            new Set([...state.groups, item.group])
+            new Set([...state.groups, item.group]),
+          );
+          return { items: updatedItems, groups: updatedGroups };
+        }),
+      updateItem: (id: string, updates: Pick<IItem, 'item' | 'group'>) =>
+        set((state) => {
+          const updatedItems = state.items.map((i) =>
+            i.id === id ? { ...i, ...updates } : i,
+          );
+          const updatedGroups = Array.from(
+            new Set(updatedItems.map((i) => i.group)),
           );
           return { items: updatedItems, groups: updatedGroups };
         }),
@@ -56,7 +67,7 @@ const useItemsStore = create<ItemsState>()(
 
           const updatedItems = state.items.filter((item) => item.id !== id);
           const isGroupEmpty = !updatedItems.some(
-            (item) => item.group === itemToRemove.group
+            (item) => item.group === itemToRemove.group,
           );
           const updatedGroups = isGroupEmpty
             ? state.groups.filter((group) => group !== itemToRemove.group)
@@ -67,7 +78,7 @@ const useItemsStore = create<ItemsState>()(
       toggleItemSelection: (id: string) =>
         set((state) => ({
           items: state.items.map((item: IItem) =>
-            item.id === id ? { ...item, checked: !item.checked } : item
+            item.id === id ? { ...item, checked: !item.checked } : item,
           ),
         })),
       selectAll: () =>
@@ -87,15 +98,15 @@ const useItemsStore = create<ItemsState>()(
         return `${window.location.origin}${
           process.env.NEXT_PUBLIC_BASE_PATH
         }/?import=${LZString.compressToEncodedURIComponent(
-          JSON.stringify(state.items)
+          JSON.stringify(state.items),
         )}`;
       },
     }),
     {
       name: 'items-storage',
       partialize: (state) => ({ items: state.items, groups: state.groups }),
-    }
-  )
+    },
+  ),
 );
 
 export default useItemsStore;
